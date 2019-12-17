@@ -81,10 +81,6 @@ describe('loading:', function() {
 
         windowLocation = null;
         matrixChat = null;
-
-        languageHandler.setMissingEntryGenerator(function(key) {
-            return key.split('|', 2)[1];
-        });
     });
 
     afterEach(async function() {
