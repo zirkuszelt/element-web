@@ -26,8 +26,12 @@
     "embeddedPages": {
         "homeUrl": "/homepage.html"
     },
+    "integrations_ui_url": "https://dimension.t2bot.io/element",
+    "integrations_rest_url": "https://dimension.t2bot.io/api/v1/scalar",
+    "integrations_widgets_urls": ["https://dimension.t2bot.io/widgets"],
+    "integrations_jitsi_widget_url": "https://dimension.t2bot.io/widgets/jitsi",
     "bug_report_endpoint_url": "https://element.io/bugreports/submit",
-    "defaultCountryCode": "GB",
+    "defaultCountryCode": "DE",
     "showLabsSettings": false,
     "features": {
         "feature_new_spinner": false
@@ -62,6 +66,7 @@
         "UIFeature.shareQrCode": false
     },
     "jitsi": {
-        "preferredDomain": "jitsi.riot.im"
-    }
+        "preferredDomain": "jitsi.technischerpunkt.org"
+    },
+    "inviteBotUrl": "http://localhost:2020/invite"
 }

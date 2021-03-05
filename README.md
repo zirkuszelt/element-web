@@ -1,31 +1,15 @@
-Element
-=======
+# Zirkuszelt
 
-Element (formerly known as Vector and Riot) is a Matrix web client built using the [Matrix
-React SDK](https://github.com/matrix-org/matrix-react-sdk).
+This an [Element](https://github.com/vector-im/element-web) fork implementing all necessary changes to serve as our base for our conferencing platform.
 
-Supported Environments
-======================
-
-Element has several tiers of support for different environments:
-
-* Supported
-  * Definition: Issues **actively triaged**, regressions **block** the release
-  * Last 2 major versions of Chrome, Firefox, Safari, and Edge on desktop OSes
-  * Latest release of official Element Desktop app on desktop OSes
-  * Desktop OSes means macOS, Windows, and Linux versions for desktop devices
-    that are actively supported by the OS vendor and receive security updates
-* Experimental
-  * Definition: Issues **accepted**, regressions **do not block** the release
-  * Element as an installed PWA via current stable version of Chrome, Firefox, and Safari
-  * Mobile web for current stable version of Chrome, Firefox, and Safari on Android, iOS, and iPadOS
-* Not supported
-  * Definition: Issues only affecting unsupported environments are **closed**
-  * Everything else
-
-For accessing Element on an Android or iOS device, we currently recommend the
-native apps [element-android](https://github.com/vector-im/element-android)
-and [element-ios](https://github.com/vector-im/element-ios).
+## Customizations
+- Branding (logo, background, favicon)
+- Custom SSO Button for anonymous accounts via [anon-oidc](https://gitlab.com/alangecker/anon-oidc)
+- Hide SetupEncryptionToast for anonymous accounts
+- Jitsi config adjustments
+- Disable (push) notifications
+- Customized HomePage
+- No welcome page
 
 Getting Started
 ===============
