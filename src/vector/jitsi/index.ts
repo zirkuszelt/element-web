@@ -231,11 +231,50 @@ function joinConference() { // event handler bound in HTML
         height: "100%",
         parentNode: document.querySelector("#jitsiContainer"),
         roomName: conferenceId,
+        configOverwrite: {
+            disableDeepLinking: true,
+            disableInviteFunctions: true,
+            hideParticipantsStats: true,
+            startWithAudioMuted: true,
+            disableThirdPartyRequests: true,
+            channelLastN: -1,
+            lastNLimits: {
+                5: 20,
+                30: 15,
+                50: 10,
+                70: 5
+            },
+            p2p: {
+                enabled: false
+            },
+            analytics: {
+                googleAnalyticsTrackingId: false,
+                amplitudeAPPKey: false,
+            }
+        },
         interfaceConfigOverwrite: {
             SHOW_JITSI_WATERMARK: false,
             SHOW_WATERMARK_FOR_GUESTS: false,
             MAIN_TOOLBAR_BUTTONS: [],
             VIDEO_LAYOUT_FIT: "height",
+
+            HIDE_INVITE_MORE_HEADER: true,
+            MOBILE_APP_PROMO: false,
+            DISPLAY_WELCOME_FOOTER: false,
+            GENERATE_ROOMNAMES_ON_WELCOME_PAGE: false,
+            SHOW_CHROME_EXTENSION_BANNER: false,
+            // INITIAL_TOOLBAR_TIMEOUT: 0,
+            TOOLBAR_ALWAYS_VISIBLE: true,
+            
+            SETTINGS_SECTIONS: [ 'devices', 'language', 'moderator'],
+            TOOLBAR_BUTTONS: [
+                'microphone', 'camera', 'closedcaptions', 'desktop', 
+                'fodeviceselection',  'hangup',
+                'livestreaming', 'sharedvideo', 'settings', 
+                'videoquality', 'filmstrip', 'invite', 'stats', 'shortcuts',
+                'tileview', 'download', 'help', 'mute-everyone'
+            ],
+
         },
         jwt: jwt,
     };
@@ -244,7 +283,9 @@ function joinConference() { // event handler bound in HTML
     if (displayName) meetApi.executeCommand("displayName", displayName);
     if (avatarUrl) meetApi.executeCommand("avatarUrl", avatarUrl);
     if (userId) meetApi.executeCommand("email", userId);
-    if (roomName) meetApi.executeCommand("subject", roomName);
+    
+    // don't show any room title inside jitsi
+    meetApi.executeCommand("subject", "");
 
     meetApi.on("readyToClose", () => {
         switchVisibleContainers();
