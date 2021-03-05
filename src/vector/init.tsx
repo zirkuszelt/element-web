@@ -49,6 +49,9 @@ export function preparePlatform() {
         console.log("Using Web platform");
         PlatformPeg.set(new WebPlatform());
     }
+
+    // disable notifications
+    PlatformPeg.platform.supportsNotifications = () => false
 }
 
 export function setupLogStorage() {
