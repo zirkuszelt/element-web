@@ -23,6 +23,9 @@
             }
         ]
     },
+    "embeddedPages": {
+        "homeUrl": "/homepage.html"
+    },
     "bug_report_endpoint_url": "https://element.io/bugreports/submit",
     "defaultCountryCode": "GB",
     "showLabsSettings": false,

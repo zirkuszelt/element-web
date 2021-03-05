@@ -14,6 +14,20 @@ const additionalPlugins = [
         /src\/toasts\/SetupEncryptionToast.ts/,
         path.resolve(__dirname, 'src/customisations/SetupEncryptionToast.ts'),
     ),
+    new webpack.NormalModuleReplacementPlugin(
+        /src\/components\/structures\/auth\/Login\.tsx/,
+        function (resource) {
+            // only replace if called from  matrix-react-sdk
+            if(resource.context.match(/matrix-react-sdk/)) {
+                resource.request = path.resolve(__dirname, 'src/customisations/Login.tsx')
+                resource.resource = path.resolve(__dirname, 'src/customisations/Login.tsx')
+            }
+        },
+    ),
+    new webpack.NormalModuleReplacementPlugin(
+        /src\/toasts\/SetupEncryptionToast.ts/,
+        path.resolve(__dirname, 'src/customisations/SetupEncryptionToast.ts'),
+    ),
 ];
 
 module.exports = (env, argv) => {
