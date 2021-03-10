@@ -16,23 +16,40 @@ import ServerPicker from "matrix-react-sdk/src/components/views/elements/ServerP
 import LoginComponent from 'matrix-react-sdk/src/components/structures/auth/Login'
 
 
+import {ValidatedServerConfig} from "matrix-react-sdk/src/utils/AutoDiscoveryUtils";
+import Modal from "matrix-react-sdk/src/Modal";
+import ServerPickerDialog from "matrix-react-sdk/src/components/views/dialogs/ServerPickerDialog";
+const showPickerDialog = (
+    title: string,
+    serverConfig: ValidatedServerConfig,
+    onFinished: (config: ValidatedServerConfig) => void,
+) => {
+    Modal.createTrackedDialog("Server Picker", "", ServerPickerDialog, { title, serverConfig, onFinished });
+};
+
+
 export default class LoginComponentWrapped extends LoginComponent {
-
     loginWithAnonymProvider = ev => {
-
         // @ts-ignore : loginLogic is marked as private
         const matrixClient = this.loginLogic.createTemporaryClient()
         PlatformPeg.get().startSingleSignOn(matrixClient, 'sso', this.props.fragmentAfterLogin);
     }
 
     renderLoginComponentForFlows() {
-
-        if(this.props.serverConfig.hsUrl == SdkConfig.get().default_server_config['m.homeserver'].base_url) {
+        const onClick = () => {
+            showPickerDialog('', this.props.serverConfig, (config?: ValidatedServerConfig) => {
+                if (config) {
+                    this.props.onServerConfigChange(config);
+                }
+            });
+        };
+        if (this.props.serverConfig.hsUrl == SdkConfig.get().default_server_config['m.homeserver'].base_url) {
             // for our homeserver, replace the button label
-            return (<div className="mx_SSOButtons" onClick={this.loginWithAnonymProvider}>
-                <div role="button" tabIndex={0} className="mx_AccessibleButton mx_SSOButton mx_SSOButton_default mx_SSOButton_primary">
+            return (<div className="mx_SSOButtons">
+                <div role="button" tabIndex={0} className="mx_AccessibleButton mx_SSOButton mx_SSOButton_default mx_SSOButton_primary" onClick={this.loginWithAnonymProvider}>
                     Ohne Registration einloggen
                 </div>
+                <div style={{paddingTop: '0.5em'}}>Solltest du einen bestehenden Element/Matrix-Account besitzen, so kannst du auch diesen nutzen. Klicke dazu <a href="#" onClick={onClick}>hier</a>, aber vergiss nicht, deine neue Session auch zu verifizieren :)</div>
             </div>
             )
         }
@@ -48,6 +65,28 @@ export default class LoginComponentWrapped extends LoginComponent {
             <div className="mx_Login_loader"><Spinner /></div> : null;
 
         const errorText = this.state.errorText;
+        const isAnonymServer = this.props.serverConfig.hsUrl == SdkConfig.get().default_server_config['m.homeserver'].base_url
+
+
+        if (!this.props.fragmentAfterLogin.startsWith('/invite/')) {
+            return (
+                <AuthPage>
+                    <AuthHeader disableLanguageSelector={this.props.isSyncing || this.state.busyLoggingIn} />
+                    <AuthBody>
+                        <h2>
+                            {SdkConfig.get()['brand']}
+                            {loader}
+                        </h2>
+                        <p>
+                            Willkommen im Zirkuszelt, unserem Ort für Video-Großkonferenzen.
+                        </p>
+                        <div className="mx_Login_error">
+                            Um beizutreten, benötigst du einen Einladelink.
+                        </div>
+                    </AuthBody>
+                </AuthPage>
+            );
+        }
 
         let errorTextSection;
         if (errorText) {
@@ -83,7 +122,7 @@ export default class LoginComponentWrapped extends LoginComponent {
                     {_t("If you've joined lots of rooms, this might take a while")}
                 </div> }
             </div>;
-        } else if (SettingsStore.getValue(UIFeature.Registration)) {
+        } else if (SettingsStore.getValue(UIFeature.Registration) && !isAnonymServer) {
             footer = (
                 <span className="mx_AuthBody_changeFlow">
                     {_t("New? <a>Create account</a>", {}, {
@@ -106,10 +145,12 @@ export default class LoginComponentWrapped extends LoginComponent {
                     </p>
                     { errorTextSection }
                     { serverDeadSection }
-                    <ServerPicker
-                        serverConfig={this.props.serverConfig}
-                        onServerConfigChange={this.props.onServerConfigChange}
-                    />
+                    { !isAnonymServer &&
+                        <ServerPicker
+                            serverConfig={this.props.serverConfig}
+                            onServerConfigChange={this.props.onServerConfigChange}
+                        />
+                    }
                     { this.renderLoginComponentForFlows() }
                     { footer }
                 </AuthBody>
