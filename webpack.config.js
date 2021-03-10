@@ -16,11 +16,33 @@ const additionalPlugins = [
     ),
     new webpack.NormalModuleReplacementPlugin(
         /src\/components\/structures\/auth\/Login\.tsx/,
-        function (resource) {
+        function(resource) {
             // only replace if called from  matrix-react-sdk
-            if(resource.context.match(/matrix-react-sdk/)) {
-                resource.request = path.resolve(__dirname, 'src/customisations/Login.tsx')
-                resource.resource = path.resolve(__dirname, 'src/customisations/Login.tsx')
+            if (resource.context.match(/matrix-react-sdk/)) {
+                resource.request = path.resolve(__dirname, 'src/customisations/Login.tsx');
+                resource.resource = path.resolve(__dirname, 'src/customisations/Login.tsx');
+            }
+        },
+    ),
+
+    new webpack.NormalModuleReplacementPlugin(
+        /src\/components\/views\/elements\/AppTile\.js/,
+        function(resource) {
+            // only replace if called from  matrix-react-sdk
+            if (resource.context.match(/matrix-react-sdk/)) {
+                resource.request = path.resolve(__dirname, 'src/customisations/AppTile.js');
+                resource.resource = path.resolve(__dirname, 'src/customisations/AppTile.js');
+            }
+        },
+    ),
+
+    new webpack.NormalModuleReplacementPlugin(
+        /src\/stores\/widgets\/StopGapWidgetDriver\.ts/,
+        function(resource) {
+            // only replace if called from  matrix-react-sdk
+            if (resource.context.match(/matrix-react-sdk/)) {
+                resource.request = path.resolve(__dirname, 'src/customisations/StopGapWidgetDriver.ts');
+                resource.resource = path.resolve(__dirname, 'src/customisations/StopGapWidgetDriver.ts');
             }
         },
     ),
