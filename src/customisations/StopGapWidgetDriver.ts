@@ -17,13 +17,11 @@ export class StopGapWidgetDriver extends SuperStopGapWidgetDriver {
         forWidgetKind: WidgetKind,
         inRoomId?: string,
     ) {
-        super(allowedCapabilities, forWidget, forWidgetKind, inRoomId);
-
-
         // allow AlwaysOnScreen for all widgets of type edumeet
         if (forWidget.type == 'edumeet' && forWidgetKind === WidgetKind.Room) {
             // @ts-ignore : allowedCapabilities is markes as private, but this is only a typescript concept
-            this.allowedCapabilities.add(MatrixCapabilities.AlwaysOnScreen);
+            allowedCapabilities.push(MatrixCapabilities.AlwaysOnScreen);
         }
+        super(allowedCapabilities, forWidget, forWidgetKind, inRoomId);
     }
 }
