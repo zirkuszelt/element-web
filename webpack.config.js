@@ -11,10 +11,6 @@ if (!og_image_url) og_image_url = 'https://app.element.io/themes/element/img/log
 const additionalPlugins = [
     // This is where you can put your customisation replacements.
     new webpack.NormalModuleReplacementPlugin(
-        /src\/toasts\/SetupEncryptionToast.ts/,
-        path.resolve(__dirname, 'src/customisations/SetupEncryptionToast.ts'),
-    ),
-    new webpack.NormalModuleReplacementPlugin(
         /src\/components\/structures\/auth\/Login\.tsx/,
         function(resource) {
             // only replace if called from  matrix-react-sdk
@@ -49,7 +45,7 @@ const additionalPlugins = [
     new webpack.NormalModuleReplacementPlugin(
         /src\/toasts\/SetupEncryptionToast.ts/,
         path.resolve(__dirname, 'src/customisations/SetupEncryptionToast.ts'),
-    ),
+    ),          
 ];
 
 module.exports = (env, argv) => {
