@@ -35,7 +35,6 @@ import SdkConfig from "matrix-react-sdk/src/SdkConfig";
 
 import {parseQs, parseQsFromFragment} from './url_utils';
 import VectorBasePlatform from "./platform/VectorBasePlatform";
-import request from 'browser-request'
 
 let lastLocationHashSet: string = null;
 
@@ -56,12 +55,7 @@ function routeUrl(location: Location) {
 
     console.log("Routing URL ", location.href);
     const s = getScreenFromLocation(location);
-    
-    if(s.screen.startsWith('invite/') && MatrixClientPeg.get()) {
-        requestInvites(s.screen)
-    } else {
-        (window.matrixChat as MatrixChatType).showScreen(s.screen, s.params);
-    }
+    (window.matrixChat as MatrixChatType).showScreen(s.screen, s.params);
 }
 
 function onHashChange(ev: HashChangeEvent) {
@@ -72,57 +66,12 @@ function onHashChange(ev: HashChangeEvent) {
     routeUrl(window.location);
 }
 
-let invitesRequestInProgress = false
-function requestInvites(screen: string) {
-    if(invitesRequestInProgress) return
-    invitesRequestInProgress = true
-    const inviteCode = screen.slice(8)
-    const userId = MatrixClientPeg.get()?.credentials?.userId
-    const url = SdkConfig.get()['inviteBotUrl']
-    console.log('invite', url, inviteCode, userId)
-    request({
-        method:'POST',
-        url,
-        body: JSON.stringify({
-            inviteCode: inviteCode,
-            matrixId: userId
-        }),
-        json:true
-    }, (err,res) => {
-        invitesRequestInProgress = false
-        if(err) {
-            console.error(err)
-        } else {
-            const r = JSON.parse(res.response)
-            if(!r?.success) {
-                console.error('invitation request failed', r.error)
-            }
-        }
-        document.location.hash = '#/home'
-    })
-    
-}
-
-function waitForLoggedIn(callback: () => void, retry: number = 30) {
-    if(MatrixClientPeg.get()?.credentials?.userId) {
-        callback()
-    } else {
-        setTimeout( () => {
-            waitForLoggedIn(callback, retry-1)
-        }, 1000)
-    }
-}
-
 // This will be called whenever the SDK changes screens,
 // so a web page can update the URL bar appropriately.
 function onNewScreen(screen: string, replaceLast = false) {
     console.log("newscreen " + screen);
     const hash = '#/' + screen;
     lastLocationHashSet = hash;
-
-    if(screen.startsWith('invite/')) {
-        requestInvites(screen)
-    }
 
     if (replaceLast) {
         window.location.replace(hash);
@@ -205,15 +154,6 @@ export async function loadApp(fragParams: {}) {
     // Don't bother loading the app until the config is verified
     const config = await verifyServerConfig();
     const MatrixChat = sdk.getComponent('structures.MatrixChat');
-
-
-    // maybe we are loggedin and land on an invite page directly,
-    // without any trigger of onHashChange or onNewScreen?
-    waitForLoggedIn(() => {
-        if(document.location.hash.startsWith('#/invite/')) {
-            requestInvites(document.location.hash.slice(1))
-        }
-    })
     return <MatrixChat
         onNewScreen={onNewScreen}
         makeRegistrationUrl={makeRegistrationUrl}
