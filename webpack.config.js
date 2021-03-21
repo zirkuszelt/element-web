@@ -94,6 +94,17 @@ const additionalPlugins = [
         },
     ),
     new webpack.NormalModuleReplacementPlugin(
+        /src\/editor\/serialize\.ts/,
+        function(resource) {
+            // only replace if called from  matrix-react-sdk
+            if (resource.context.match(/matrix-react-sdk/)) {
+                resource.request = path.resolve(__dirname, 'src/customisations/serialize.ts');
+                resource.resource = path.resolve(__dirname, 'src/customisations/serialize.ts');
+            }
+        },
+    ),
+    
+    new webpack.NormalModuleReplacementPlugin(
         /src\/toasts\/SetupEncryptionToast.ts/,
         path.resolve(__dirname, 'src/customisations/SetupEncryptionToast.ts'),
     ),          
