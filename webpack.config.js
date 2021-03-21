@@ -40,6 +40,37 @@ const additionalPlugins = [
             }
         },
     ),
+    new webpack.NormalModuleReplacementPlugin(
+        /src\/components\/structures\/LoggedInView\.tsx/,
+        function(resource) {
+            // only replace if called from  matrix-react-sdk
+            if (resource.context.match(/matrix-react-sdk/)) {
+                resource.request = path.resolve(__dirname, 'src/customisations/LoggedInView.tsx');
+                resource.resource = path.resolve(__dirname, 'src/customisations/LoggedInView.tsx');
+            }
+        },
+    ),
+    new webpack.NormalModuleReplacementPlugin(
+        /src\/components\/structures\/LeftPanel\.tsx/,
+        function(resource) {
+            // only replace if called from  matrix-react-sdk
+            if (resource.context.match(/matrix-react-sdk/)) {
+                resource.request = path.resolve(__dirname, 'src/customisations/LeftPanel.tsx');
+                resource.resource = path.resolve(__dirname, 'src/customisations/LeftPanel.tsx');
+            }
+        },
+    ),
+
+    new webpack.NormalModuleReplacementPlugin(
+        /src\/components\/views\/right_panel\/RoomHeaderButtons\.tsx/,
+        function(resource) {
+            // only replace if called from  matrix-react-sdk
+            if (resource.context.match(/matrix-react-sdk/)) {
+                resource.request = path.resolve(__dirname, 'src/customisations/RoomHeaderButtons.tsx');
+                resource.resource = path.resolve(__dirname, 'src/customisations/RoomHeaderButtons.tsx');
+            }
+        },
+    ),
 
     new webpack.NormalModuleReplacementPlugin(
         /src\/components\/views\/elements\/AppTile\.js/,
