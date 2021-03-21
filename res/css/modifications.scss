@@ -1,0 +1,14 @@
+
+.mx_RoomView_fullscreenView {
+    flex-direction: row;
+    .mx_AppsDrawer {
+        flex: 2;
+        margin: 0;
+    }
+    .mx_EventTile_line {
+        margin-right: 0;
+    }
+    .mx_EventListSummary_toggle {
+        display: none;
+    }
+}

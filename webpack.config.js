@@ -30,6 +30,16 @@ const additionalPlugins = [
             }
         },
     ),
+    new webpack.NormalModuleReplacementPlugin(
+        /src\/components\/structures\/RoomView\.tsx/,
+        function(resource) {
+            // only replace if called from  matrix-react-sdk
+            if (resource.context.match(/matrix-react-sdk/)) {
+                resource.request = path.resolve(__dirname, 'src/customisations/RoomView.tsx');
+                resource.resource = path.resolve(__dirname, 'src/customisations/RoomView.tsx');
+            }
+        },
+    ),
 
     new webpack.NormalModuleReplacementPlugin(
         /src\/components\/views\/elements\/AppTile\.js/,

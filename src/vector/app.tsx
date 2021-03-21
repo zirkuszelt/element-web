@@ -36,6 +36,8 @@ import SdkConfig from "matrix-react-sdk/src/SdkConfig";
 import {parseQs, parseQsFromFragment} from './url_utils';
 import VectorBasePlatform from "./platform/VectorBasePlatform";
 
+import "../../res/css/modifications.scss";
+
 let lastLocationHashSet: string = null;
 
 // Parse the given window.location and return parameters that can be used when calling

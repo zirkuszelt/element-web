@@ -3,6 +3,7 @@
 This an [Element](https://github.com/vector-im/element-web) fork implementing all necessary changes to serve as our base for our conferencing platform.
 
 ## Customizations
+- Fullscreen Widget/Chat view
 - Branding (logo, background, favicon)
 - Custom SSO Button for anonymous accounts via [anon-oidc](https://gitlab.com/alangecker/anon-oidc)
 - Hide SetupEncryptionToast for anonymous accounts

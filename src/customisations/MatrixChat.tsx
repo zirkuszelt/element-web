@@ -31,7 +31,17 @@ function initAutoAcceptor() {
     });
 }
 
+// @ts-ignore
 export default class MatrixChatWrapped extends MatrixChat {
+    viewUser(userId: string, subAction: string) {
+        console.log('DEBUG', 'viewUser')
+        // @ts-ignore
+        super.viewUser(userId, subAction)
+        if (document.fullscreenElement) {
+            document.exitFullscreen()
+        }
+    }
+
     showScreen(screen: string, params?: {[key: string]: any}) {
         const user = MatrixClientPeg.get()
         if (user && !isAutoAcceptActivated) initAutoAcceptor()
