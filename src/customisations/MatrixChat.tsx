@@ -29,6 +29,10 @@ import dis from "matrix-react-sdk/src/dispatcher/dispatcher";
 import {getCurrentLanguage} from 'matrix-react-sdk/src/languageHandler';
 import ThemeController from "matrix-react-sdk/src/settings/controllers/ThemeController";
 import ThreepidInviteStore from "matrix-react-sdk/src/stores/ThreepidInviteStore";
+import { DefaultTagID } from 'matrix-react-sdk/src/stores/room-list/models';
+import RoomListActions from 'matrix-react-sdk/src/actions/RoomListActions';
+import { EchoChamber } from 'matrix-react-sdk/src/stores/local-echo/EchoChamber';
+import { MENTIONS_ONLY } from "matrix-react-sdk/src/RoomNotifs";
 
 
 let invitesRequestInProgress = false
@@ -45,9 +49,30 @@ function initAutoAcceptor() {
             try {
                 const roomId = ev.getRoomId()
                 await retry<void, MatrixError>(() => user.joinRoom(roomId), 5, (err) => {
-                    // if we received a Gateway timeout then retry
-                    return err.httpStatus === 504;
+                    return err.httpStatus >= 500;
                 });
+                const room = user.getRoom(roomId)
+                const roomEchoChamber = EchoChamber.forRoom(room)
+
+                // breakout rooms -> low priority
+                if (room.name.match(/breakout/i)) {
+                    console.log(`tag room ${room.name} as low priority`)
+                    const removeTag = DefaultTagID.Favourite;
+                    const addTag = DefaultTagID.LowPriority;
+                    dis.dispatch(RoomListActions.tagRoom(
+                        MatrixClientPeg.get(),
+                        room,
+                        removeTag,
+                        addTag,
+                        undefined,
+                        0,
+                    ));
+                    roomEchoChamber.notificationVolume = MENTIONS_ONLY
+                }
+                // mute tech support channel
+                if (room.name.match(/tech[- ]support/i)) {
+                    roomEchoChamber.notificationVolume = MENTIONS_ONLY
+                }
             } catch (err) {
                 console.error('error while auto accepting invite', err)
             }
