@@ -20,7 +20,7 @@ export function htmlSerializeIfNeeded(model: EditorModel) {
 
     // if it is only a single character,
     // do not treat it as markdown
-    if (md.length <= 1) {
+    if (md.trim().length <= 1) {
         return md
     } else {
         return htmlSerializeIfNeededOriginal(model)

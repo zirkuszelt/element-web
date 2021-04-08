@@ -21,77 +21,15 @@ import React from 'react';
 import classNames from 'classnames';
 import * as sdk from 'matrix-react-sdk/src/index';
 
-import PropTypes from 'prop-types';
 import AppTile from '../AppTile';
-import dis from 'matrix-react-sdk/src/dispatcher/dispatcher';
-import * as ScalarMessaging from 'matrix-react-sdk/src/ScalarMessaging';
 import WidgetUtils from 'matrix-react-sdk/src/utils/WidgetUtils';
 import WidgetEchoStore from "matrix-react-sdk/src/stores/WidgetEchoStore";
-import {Container, WidgetLayoutStore} from "matrix-react-sdk/src/stores/widgets/WidgetLayoutStore";
+import ResizeHandle from "matrix-react-sdk/src/components/views/elements/ResizeHandle";
+import AppsDrawer from "matrix-react-sdk/src/components/views/rooms/AppsDrawer";
 
-
-export default class AppsDrawer extends React.Component<any, any> {
-    dispatcherRef?: string
-    static propTypes = {
-        userId: PropTypes.string.isRequired,
-        room: PropTypes.object.isRequired,
-    };
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            apps: this._getApps(),
-        };
-    }
-
-    componentDidMount() {
-        ScalarMessaging.startListening();
-        WidgetLayoutStore.instance.on(WidgetLayoutStore.emissionForRoom(this.props.room), this._updateApps);
-        this.dispatcherRef = dis.register(this.onAction);
-    }
-
-    componentWillUnmount() {
-        ScalarMessaging.stopListening();
-        WidgetLayoutStore.instance.off(WidgetLayoutStore.emissionForRoom(this.props.room), this._updateApps);
-        if (this.dispatcherRef) dis.unregister(this.dispatcherRef);
-    }
-
-    // TODO: [REACT-WARNING] Replace with appropriate lifecycle event
-    // eslint-disable-next-line camelcase
-    UNSAFE_componentWillReceiveProps(newProps) {
-        // Room has changed probably, update apps
-        this._updateApps();
-    }
-
-    onAction = (action) => {
-        const hideWidgetKey = this.props.room.roomId + '_hide_widget_drawer';
-        switch (action.action) {
-            case 'appsDrawer':
-                // Note: these booleans are awkward because localstorage is fundamentally
-                // string-based. We also do exact equality on the strings later on.
-                if (action.show) {
-                    localStorage.setItem(hideWidgetKey, "false");
-                } else {
-                    // Store hidden state of widget
-                    // Don't show if previously hidden
-                    localStorage.setItem(hideWidgetKey, "true");
-                }
-
-                break;
-        }
-    };
-
-    _getApps = () => WidgetLayoutStore.instance.getContainerWidgets(this.props.room, Container.Top);
-
-    _updateApps = () => {
-        this.setState({
-            apps: this._getApps(),
-        });
-    };
-
-
+export default class AppsDrawerFullHeight extends (AppsDrawer as any) {
     render() {
+        if (!this.props.showApps) return <div />;
 
         const apps = this.state.apps.map((app, index, arr) => {
             return (<AppTile
@@ -103,6 +41,7 @@ export default class AppsDrawer extends React.Component<any, any> {
                 creatorUserId={app.creatorUserId}
                 widgetPageTitle={WidgetUtils.getWidgetDataTitle(app)}
                 waitForIframeLoad={app.waitForIframeLoad}
+                pointerEvents={this.isResizing() ? 'none' : undefined}
             />);
         });
 
@@ -124,16 +63,18 @@ export default class AppsDrawer extends React.Component<any, any> {
         const classes = classNames({
             mx_AppsDrawer: true,
             mx_AppsDrawer_fullWidth: apps.length < 2,
+            mx_AppsDrawer_resizing: this.state.resizing,
             mx_AppsDrawer_2apps: apps.length === 2,
             mx_AppsDrawer_3apps: apps.length === 3,
         });
 
         return (
             <div className={classes}>
-                <div className="mx_AppsContainer">
+                <div className="mx_AppsContainer" ref={this._collectResizer}>
                     { apps.map((app, i) => {
                         if (i < 1) return app;
                         return <React.Fragment key={app.key}>
+                            <ResizeHandle reverse={i > apps.length / 2} />
                             { app }
                         </React.Fragment>;
                     }) }

@@ -28,7 +28,7 @@ import {Layout} from "matrix-react-sdk/src/settings/Layout";
 import RoomContext from "matrix-react-sdk/src/contexts/RoomContext";
 import TimelinePanel from "matrix-react-sdk/src/components/structures/TimelinePanel";
 import ErrorBoundary from "matrix-react-sdk/src/components/views/elements/ErrorBoundary";
-import AppsDrawerNonResizeable from './lib/AppsDrawerNonResizable'
+import AppsDrawerFullHeight from './lib/AppsDrawerFullHeight'
 
 export default class FullscreenView extends RoomView {
     constructor(props, context) {
@@ -252,7 +252,7 @@ export default class FullscreenView extends RoomView {
                     this.onReactKeyDown
                 }>
                     <ErrorBoundary>
-                        <AppsDrawerNonResizeable
+                        <AppsDrawerFullHeight
                             room={this.state.room}
                             userId={this.context.credentials.userId}
 
