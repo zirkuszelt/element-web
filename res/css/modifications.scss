@@ -21,3 +21,12 @@
 .mx_RightPanel_membersButton::before {
     mask-image: url("~matrix-react-sdk/res/img/element-icons/room/members.svg");
 }
+
+.mx_AppTileMenuBar_iconButton.mx_AppTileMenuBar_iconButton_popout {
+    opacity: 0.2;
+}
+
+.mx_MessageActionBar_directMessageButton::after {
+    mask-image: url("~matrix-react-sdk/res/img/element-icons/send-message.svg");
+    mask-size: 50%;
+}

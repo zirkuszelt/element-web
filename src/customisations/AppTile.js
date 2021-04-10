@@ -24,6 +24,21 @@ function isWhitelistedEdumeetWidget({ type, url, data}) {
     if (data.url && (!data.url.match(/&domain=\$domain&/) || data.url.match(/domain=/g).length > 1)) return false;
     return true;
 }
+function isWhitelistedEtherpadWidget({ type, url, data }) {
+    if (type !== 'm.etherpad') return false;
+    if (url && !WidgetUtils.isScalarUrl(url)) return false;
+    if (!url.startsWith(
+        'https://dimension.zirkuszelt.org/widgets/generic?url=https%3A%2F%2Fpad.klimacamp-leipzigerland.de%2F'
+    )) return false;
+    if (!data.url.startsWith('https://pad.klimacamp-leipzigerland.de/')) return false;
+    return true;
+}
+function isWhitelistedPresentationWidget({ type, url, data }) {
+    console.log('whitelist?', { type, url, data }, WidgetUtils.isScalarUrl(url))
+    if (type !== 'presentation') return false;
+    // if (url && !WidgetUtils.isScalarUrl(url)) return false;
+    return true;
+}
 
 export default class AppTileWrapped extends AppTile {
     constructor(props) {
@@ -32,7 +47,7 @@ export default class AppTileWrapped extends AppTile {
         // wrap hasPermissionToLoad to allow edumeet widgets without a permission prompt
         const superHasPermissionToLoad = this.hasPermissionToLoad;
         this.hasPermissionToLoad = (props) => {
-            if (isWhitelistedEdumeetWidget(props.app)) return true;
+            if (isWhitelistedEdumeetWidget(props.app) || isWhitelistedEtherpadWidget(props.app) || isWhitelistedPresentationWidget(props.app)) return true;
             return superHasPermissionToLoad(props);
         };
         this.state.hasPermissionToLoad = this.hasPermissionToLoad(props);

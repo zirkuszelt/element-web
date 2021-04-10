@@ -16,13 +16,17 @@ import {
 
 
 export function htmlSerializeIfNeeded(model: EditorModel) {
-    const md = mdSerialize(model);
+    const md = mdSerialize(model).trim();
 
-    // if it is only a single character,
+    // if it is only a short message
     // do not treat it as markdown
-    if (md.trim().length <= 1) {
+    if (md.length <= 4) {
         return md
     } else {
+        // never treat first character as beginng of an list
+        if (md[0].match(/[+\-*]/)) {
+            model.parts[0].validateAndInsert(0, '\\', 'plain')
+        }
         return htmlSerializeIfNeededOriginal(model)
     }
 }

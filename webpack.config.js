@@ -93,6 +93,39 @@ const additionalPlugins = [
             }
         },
     ),
+
+    new webpack.NormalModuleReplacementPlugin(
+        /src\/components\/views\/rooms\/RoomTile\.tsx/,
+        function(resource) {
+            // only replace if called from  matrix-react-sdk
+            if (resource.context.match(/matrix-react-sdk/)) {
+                resource.request = path.resolve(__dirname, 'src/customisations/RoomTile.tsx');
+                resource.resource = path.resolve(__dirname, 'src/customisations/RoomTile.tsx');
+            }
+        },
+    ),
+    new webpack.NormalModuleReplacementPlugin(
+        /src\/components\/views\/messages\/MessageActionBar.js/,
+        function(resource) {
+            // only replace if called from  matrix-react-sdk
+            if (resource.context.match(/matrix-react-sdk/)) {
+                resource.request = path.resolve(__dirname, 'src/customisations/MessageActionBar.js');
+                resource.resource = path.resolve(__dirname, 'src/customisations/MessageActionBar.js');
+            }
+        },
+    ),
+
+    new webpack.NormalModuleReplacementPlugin(
+        /src\/customisations\/WidgetPermissions.ts/,
+        function(resource) {
+            // only replace if called from  matrix-react-sdk
+            if (resource.context.match(/matrix-react-sdk/)) {
+                resource.request = path.resolve(__dirname, 'src/customisations/WidgetPermissions.ts');
+                resource.resource = path.resolve(__dirname, 'src/customisations/WidgetPermissions.ts');
+            }
+        },
+    ),
+
     new webpack.NormalModuleReplacementPlugin(
         /src\/editor\/serialize\.ts/,
         function(resource) {
