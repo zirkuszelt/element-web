@@ -2,6 +2,8 @@
 
 This an [Element](https://github.com/vector-im/element-web) fork implementing all necessary changes to serve as our base for our conferencing platform.
 
+![Screenhost](screenshot.png)
+
 ## Customizations
 - Fullscreen Widget/Chat view
 - Branding (logo, background, favicon)
